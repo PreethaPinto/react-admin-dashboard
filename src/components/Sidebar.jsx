@@ -1,25 +1,26 @@
-import * as React from 'react';
+import CustomListItem from './CustomListItem';
+
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import { Link } from 'react-router-dom';
-import { Home, Receipt, Settings } from '@mui/icons-material';
+import {
+  Dashboard,
+  People,
+  CardMembership,
+  EmojiPeople,
+  FitnessCenter,
+  Notifications,
+  Receipt,
+} from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { Avatar } from '@mui/material';
+import { useState } from 'react';
 
 const drawerWidth = 240;
 
@@ -53,24 +54,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme, open }) => ({
@@ -89,42 +72,16 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const Sidebar = () => {
+  const navigate = useNavigate();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const [open, setOpen] = useState(false);
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position='fixed' open={open}>
-        <Toolbar>
-          <IconButton
-            color='inherit'
-            aria-label='open drawer'
-            onClick={handleDrawerOpen}
-            edge='start'
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant='h6' noWrap component='div'>
-            DASHBOARD
-          </Typography>
-        </Toolbar>
-      </AppBar>
       <Drawer variant='permanent' open={open}>
         <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={() => setOpen(!open)}>
             {theme.direction === 'rtl' ? (
               <ChevronRightIcon />
             ) : (
@@ -133,53 +90,61 @@ const Sidebar = () => {
           </IconButton>
         </DrawerHeader>
         <Divider />
+        <Avatar
+          sx={{ width: 30, height: 30 }}
+          src='https://images.pexels.com/photos/4420634/pexels-photo-4420634.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+          onClick={(e) => setOpen(true)}
+        ></Avatar>
+
         <List>
-          <ListItem disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              >
-                <Home />
-              </ListItemIcon>
+          <CustomListItem
+            icon={<Dashboard />}
+            primaryText={'Dashboard'}
+            open={open}
+            onClick={() => navigate('/')}
+          />
 
-              <Link to='/'>
-                <ListItemText primary={'Home'} sx={{ opacity: open ? 1 : 0 }} />
-              </Link>
-            </ListItemButton>
-          </ListItem>
+          <CustomListItem
+            icon={<People />}
+            primaryText='Members'
+            open={open}
+            onClick={() => navigate('/members')}
+          />
 
-          <ListItem key={'Invoice'} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? 'initial' : 'center',
-                px: 2.5,
-              }}
-            >
-              <Receipt />
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : 'auto',
-                  justifyContent: 'center',
-                }}
-              ></ListItemIcon>
-              <ListItemText
-                primary={'Invoices'}
-                sx={{ opacity: open ? 1 : 0 }}
-              />
-            </ListItemButton>
-          </ListItem>
+          <CustomListItem
+            icon={<EmojiPeople />}
+            primaryText='Trainers'
+            open={open}
+            onClick={() => navigate('/trainers')}
+          />
+
+          <CustomListItem
+            icon={<CardMembership />}
+            primaryText='Membership'
+            open={open}
+            onClick={() => navigate('/membership')}
+          />
+
+          <CustomListItem
+            icon={<FitnessCenter />}
+            primaryText='Classes'
+            open={open}
+            onClick={() => navigate('/classes')}
+          />
+
+          <CustomListItem
+            icon={<Receipt />}
+            primaryText='Invoices'
+            open={open}
+            onClick={() => navigate('/invoices')}
+          />
+
+          <CustomListItem
+            icon={<Notifications />}
+            primaryText='Notifications'
+            open={open}
+            onClick={() => navigate('/notifications')}
+          />
         </List>
       </Drawer>
     </Box>
